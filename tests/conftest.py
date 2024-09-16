@@ -14,14 +14,17 @@ from subprocess import run
 import pytest
 
 
-@pytest.fixture(scope='session')
-def sample_file(tmp_path_factory):
+#@pytest.fixture(scope='session')
+@pytest.fixture
+def sample_file(tmp_path_factory, aclin):
   directory = tmp_path_factory.mktemp('sample_files')
   file = directory / 'file_with_user_read_acl'
   file.touch()
   assert not file.read_text()  # file should exist
-  run(['setfacl', '-m', 'u:user:r', file], check=True)
+  requested_acl = aclin
+  print(requested_acl)
+  run(['setfacl', '-m', requested_acl, file], check=True)
   out = run(['getfacl', '-c', file], check=True, capture_output=True)
-  assert 'user:user:r--' in out.stdout.decode()  # file should have the ACL set
+  assert requested_acl in out.stdout.decode()  # file should have the ACL set
   yield file
   rmtree(directory)
