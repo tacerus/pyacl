@@ -1,0 +1,33 @@
+[lint]
+# https://docs.astral.sh/ruff/rules/
+extend-select = [
+  "A",     # flake8-builtins
+  "BLE",   # flake8-blind-except
+  "C4",    # flake8-comprehensions
+  "COM",   # flake8-commas
+  "E",     # pycodestyle
+  "E261",  # spaces before inline comments
+  "ERA",   # eradicate
+  "EXE",   # flake8-executable
+  "FBT",   # flake8-boolean-trap
+  "I",     # isort
+  "ISC",   # flake8-implicit-str-concat
+  "PL",    # Pylint
+  "S",     # flake8-bandit
+  "UP",    # pyupgrade
+  "W",     # pycodestyle
+  "YTT",   # flake8-2020
+]
+ignore = [
+  "E501",    # line lengths
+  "S603",    # https://github.com/astral-sh/ruff/issues/4045
+  "S607",    # makes subprocess calls in test suite more portable
+]
+preview = true
+explicit-preview-rules = true
+
+[lint.per-file-ignores]
+"tests/*.py" = ["S101"]  # allow "assert" in test suites
+
+[lint.pydocstyle]
+convention = "pep257"
