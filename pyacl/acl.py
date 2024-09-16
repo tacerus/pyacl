@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """
 pyacl - high level abstractions over pylibacl
 Copyright 2024, Georg Pfuetzenreuter <mail@georg-pfuetzenreuter.net>
@@ -33,8 +32,10 @@ DEFAULT_ENTRYTYPES = [
   'user',
   'group',
   'mask',
-  'other'
+  'other',
 ]
+
+MAX_PERMBITS = 3
 
 def acl_reduce_entries(acl):
   entries = acl.to_any_text().decode().split()
@@ -42,7 +43,7 @@ def acl_reduce_entries(acl):
   return entries
 
 def acl_parse_permission(strpermission):
-  if len(strpermission) != 3:
+  if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
   permap = {
@@ -78,13 +79,13 @@ def acl_parse_entry(strentry):
   elif not entryvalue:
     return ValueError('Invalid entry value')
 
-  if len(permissions) != 3:
+  if len(permissions) != MAX_PERMBITS:
     raise ValueError('Unsupported amount of permissions')
 
   return {
     entrytype: {
-      entryvalue: acl_parse_permission(permissions)
-    }
+      entryvalue: acl_parse_permission(permissions),
+    },
   }
 
 def acl_parse_entries(acl):
