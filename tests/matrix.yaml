@@ -1,43 +1,106 @@
 ---
-- user:user:r:
+user:user:r:
+  user:
     user:
-      user:
-        read: true
-        write: false
-        execute: false
-    group:
-      null:
-        read: true
-        write: false
-        execute: false
-    mask:
-      null:
-        read: true
-        write: false
-        execute: false
-    other:
-      null:
-        read: true
-        write: false
-        execute: false
-- user:user:-w-:
+      read: true
+      write: false
+      execute: false
+  group:
+    null:
+      read: true
+      write: false
+      execute: false
+  mask:
+    null:
+      read: true
+      write: false
+      execute: false
+  other:
+    null:
+      read: true
+      write: false
+      execute: false
+user:user:-w-:
+  user:
     user:
-      user:
-        read: false
-        write: true
-        execute: false
-    group:
-      null:
-        read: true
-        write: false
-        execute: false
-    mask:
-      null:
-        read: true
-        write: true
-        execute: false
-    other:
-      null:
-        read: true
-        write: false
-        execute: false
+      read: false
+      write: true
+      execute: false
+  group:
+    null:
+      read: true
+      write: false
+      execute: false
+  mask:
+    null:
+      read: true
+      write: true
+      execute: false
+  other:
+    null:
+      read: true
+      write: false
+      execute: false
+user:user:--x:
+  user:
+    user:
+      read: false
+      write: false
+      execute: true
+  group:
+    null:
+      read: true
+      write: false
+      execute: false
+  mask:
+    null:
+      read: true
+      write: false
+      execute: true
+  other:
+    null:
+      read: true
+      write: false
+      execute: false
+user:user:r-x:
+  user:
+    user:
+      read: true
+      write: false
+      execute: true
+  group:
+    null:
+      read: true
+      write: false
+      execute: false
+  mask:
+    null:
+      read: true
+      write: false
+      execute: true
+  other:
+    null:
+      read: true
+      write: false
+      execute: false
+user:user:rwx:
+  user:
+    user:
+      read: true
+      write: true
+      execute: true
+  group:
+    null:
+      read: true
+      write: false
+      execute: false
+  mask:
+    null:
+      read: true
+      write: true
+      execute: true
+  other:
+    null:
+      read: true
+      write: false
+      execute: false

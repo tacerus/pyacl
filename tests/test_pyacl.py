@@ -20,12 +20,7 @@ def load_yaml(file):
   with open(join(dirname(__file__), file)) as fh:
     data = safe_load(fh)
 
-  out = []
-
-  for entry in data:
-    out.append(tuple(entry.items())[0])
-
-  return out
+  return list(data.items())
 
 
 @mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
