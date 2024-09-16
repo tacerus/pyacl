@@ -5,102 +5,62 @@ user:user:r:
       read: true
       write: false
       execute: false
-  group:
+  group: &null_ro
     null:
       read: true
       write: false
       execute: false
-  mask:
-    null:
-      read: true
-      write: false
-      execute: false
-  other:
-    null:
-      read: true
-      write: false
-      execute: false
+  mask: *null_ro
+  other: *null_ro
 user:user:-w-:
   user:
     user:
       read: false
       write: true
       execute: false
-  group:
-    null:
-      read: true
-      write: false
-      execute: false
+  group: *null_ro
   mask:
     null:
       read: true
       write: true
       execute: false
-  other:
-    null:
-      read: true
-      write: false
-      execute: false
+  other: *null_ro
 user:user:--x:
   user:
     user:
       read: false
       write: false
       execute: true
-  group:
-    null:
-      read: true
-      write: false
-      execute: false
+  group: *null_ro
   mask:
     null:
       read: true
       write: false
       execute: true
-  other:
-    null:
-      read: true
-      write: false
-      execute: false
+  other: *null_ro
 user:user:r-x:
   user:
     user:
       read: true
       write: false
       execute: true
-  group:
-    null:
-      read: true
-      write: false
-      execute: false
+  group: *null_ro
   mask:
     null:
       read: true
       write: false
       execute: true
-  other:
-    null:
-      read: true
-      write: false
-      execute: false
+  other: *null_ro
 user:user:rwx:
   user:
     user:
       read: true
       write: true
       execute: true
-  group:
-    null:
-      read: true
-      write: false
-      execute: false
+  group: *null_ro
   mask:
     null:
       read: true
       write: true
       execute: true
-  other:
-    null:
-      read: true
-      write: false
-      execute: false
+  other: *null_ro
