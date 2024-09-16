@@ -1,0 +1,20 @@
+[build-system]
+requires = [
+  'hatchling',
+]
+build-backend = 'hatchling.build'
+
+[project]
+name = 'pyacl'
+description = 'High level abstractions over pylibacl'
+version = '0.0.1'
+authors = [
+  { name='Georg Pfuetzenreuter', email='georg+python@lysergic.dev' },
+]
+readme = 'README.txt'
+requires-python = '>=3.6'
+
+[tool.hatch.build.targets.pyacl]
+dependencies = [
+  'pylibacl',
+]
