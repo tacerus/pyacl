@@ -1,0 +1,43 @@
+---
+- user:user:r:
+    user:
+      user:
+        read: true
+        write: false
+        execute: false
+    group:
+      null:
+        read: true
+        write: false
+        execute: false
+    mask:
+      null:
+        read: true
+        write: false
+        execute: false
+    other:
+      null:
+        read: true
+        write: false
+        execute: false
+- user:user:-w-:
+    user:
+      user:
+        read: false
+        write: true
+        execute: false
+    group:
+      null:
+        read: true
+        write: false
+        execute: false
+    mask:
+      null:
+        read: true
+        write: true
+        execute: false
+    other:
+      null:
+        read: true
+        write: false
+        execute: false
