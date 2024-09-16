@@ -52,7 +52,7 @@ def parse_permission(strpermission):
   permap_s = {
     'r': 'read',
     'w': 'write',
-    'e': 'execute',
+    'x': 'execute',
   }
 
   outmap = DEFAULT_PERMISSIONS.copy()
