@@ -10,11 +10,6 @@ You may obtain copies of the Licence in any of the official languages at https:/
 
 import posix1e
 
-myacl = posix1e.ACL(file='/tmp/testacl')
-print(myacl)
-
-myentries = list(myacl)
-
 DEFAULT_ENTRIES = [
   'u::rw-',
   'g::r--',
@@ -37,12 +32,14 @@ DEFAULT_ENTRYTYPES = [
 
 MAX_PERMBITS = 3
 
-def acl_reduce_entries(acl):
+
+def reduce_entries(acl):
   entries = acl.to_any_text().decode().split()
   entries = [entry for entry in entries if entry not in DEFAULT_ENTRIES]
   return entries
 
-def acl_parse_permission(strpermission):
+
+def parse_permission(strpermission):
   if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
@@ -65,7 +62,8 @@ def acl_parse_permission(strpermission):
 
   return outmap
 
-def acl_parse_entry(strentry):
+
+def parse_entry(strentry):
   if not strentry:
     raise ValueError('Got empty string')
 
@@ -84,16 +82,29 @@ def acl_parse_entry(strentry):
 
   return {
     entrytype: {
-      entryvalue: acl_parse_permission(permissions),
+      entryvalue: parse_permission(permissions),
     },
   }
 
-def acl_parse_entries(acl):
+
+def parse_entries(acl):
   outmap = {
     group: DEFAULT_PERMISSIONS for group in DEFAULT_ENTRYTYPES
   }
 
   for entry in acl:
-    outmap.update(acl_parse_entry(entry))
+    outmap.update(parse_entry(entry))
 
   return outmap
+
+
+def aclfromfile(path):
+  return posix1e.ACL(file=path)
+
+
+def entriesfromfile(path):
+  return reduce_entries(aclfromfile(path))
+
+
+def parsefromfile(path):
+  return parse_entries(reduce_entries(aclfromfile(path)))

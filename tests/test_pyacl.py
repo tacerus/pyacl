@@ -8,8 +8,6 @@ An English copy of the Licence is shipped in a file called LICENSE along with th
 You may obtain copies of the Licence in any of the official languages at https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12.
 """
 
-import posix1e
-
 from pyacl import acl
 
 
@@ -44,5 +42,5 @@ def test_parse_acl(sample_file):
       },
     },
   }
-  have = acl.acl_parse_entries(acl.acl_reduce_entries(posix1e.ACL(file=sample_file)))
+  have = acl.parsefromfile(sample_file)
   assert want == have
