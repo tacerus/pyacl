@@ -43,22 +43,32 @@ def parse_permission(strpermission):
   if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
-  permap = {
+  permap_i = {
     0: 'read',
     1: 'write',
     2: 'execute',
   }
 
+  permap_s = {
+    'r': 'read',
+    'w': 'write',
+    'e': 'execute',
+  }
+
   outmap = DEFAULT_PERMISSIONS.copy()
 
-  for i, perm in permap.items():
-    permval = strpermission[i]
-    if permval in ['r', 'w', 'x']:
-      outmap[perm] = True
-    elif permval == '-':
-      outmap[perm] = False
+  for i, spval in enumerate(strpermission):
+    permval = permap_i[i]
+    if spval == '-':
+      outmap[permval] = False
     else:
-      return ValueError('Invalid permission flag')
+      spermval = permap_s.get(spval)
+      if spermval and spermval in outmap:
+        if spermval != permval:
+          raise ValueError('Unexpected permission mismatch')
+        outmap[spermval] = True
+      else:
+        return ValueError('Invalid permission flag')
 
   return outmap
 
