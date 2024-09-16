@@ -20,8 +20,8 @@ def sample_file(tmp_path_factory):
   file = directory / 'file_with_user_read_acl'
   file.touch()
   assert not file.read_text()  # file should exist
-  run(['setfacl', '-m', 'u:georg2:r', file], check=True)
+  run(['setfacl', '-m', 'u:user:r', file], check=True)
   out = run(['getfacl', '-c', file], check=True, capture_output=True)
-  assert 'user:georg2:r--' in out.stdout.decode()  # file should have the ACL set
+  assert 'user:user:r--' in out.stdout.decode()  # file should have the ACL set
   yield file
   rmtree(directory)

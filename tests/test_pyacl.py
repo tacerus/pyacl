@@ -14,7 +14,7 @@ from pyacl import acl
 def test_parse_acl(sample_file):
   want = {
     'user': {
-      'georg2': {
+      'user': {
         'read': True,
         'write': False,
         'execute': False,
