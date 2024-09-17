@@ -1,0 +1,23 @@
+---
+user:user:r:
+  args:
+    target_name: user
+    target_type: user
+    read: true
+  expect:
+    user:
+      user:
+        read: true
+        write: false
+        execute: false
+    group: &null_allfalse
+      null:
+        read: false
+        write: false
+        execute: false
+    mask: &null_ro
+      null:
+        read: true
+        write: false
+        execute: false
+    other: *null_allfalse

@@ -20,6 +20,7 @@ extend-select = [
 ]
 ignore = [
   "E501",    # line lengths
+  "FBT002",  # booleans as function arguments
   "S603",    # https://github.com/astral-sh/ruff/issues/4045
   "S607",    # makes subprocess calls in test suite more portable
 ]
@@ -31,3 +32,6 @@ explicit-preview-rules = true
 
 [lint.pydocstyle]
 convention = "pep257"
+
+[lint.isort]
+force-wrap-aliases = true

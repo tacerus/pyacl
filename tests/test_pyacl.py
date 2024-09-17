@@ -24,6 +24,15 @@ def load_yaml(file):
 
 
 @mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
-def test_parse_acl(sample_file, aclin, aclout):
-  have = acl.parsefromfile(sample_file)
+def test_parse_acl(sample_file_with_acl, aclin, aclout):
+  have = acl.parsefromfile(sample_file_with_acl)
   assert aclout == have
+
+
+@mark.parametrize('scenario, data', load_yaml('matrix-apply.yaml'))
+def test_build_and_apply_acl(sample_file, scenario, data):
+  built_acl = acl.buildacl(**data['args'])
+  assert len(list(built_acl)) == 5  # noqa PLR2004, this is the expected size of the built ACL
+  assert acl.acltofile(built_acl, sample_file) is None
+  read_acl = acl.parsefromfile(sample_file)
+  assert read_acl == data['expect']

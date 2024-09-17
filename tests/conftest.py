@@ -14,9 +14,18 @@ from subprocess import run
 import pytest
 
 
-#@pytest.fixture(scope='session')
 @pytest.fixture
-def sample_file(tmp_path_factory, aclin):
+def sample_file(tmp_path_factory):
+  directory = tmp_path_factory.mktemp('sample_files')
+  file = directory / 'file_to_be_acled'
+  file.touch()
+  assert not file.read_text()  # file should exist
+  yield file
+  rmtree(directory)
+
+
+@pytest.fixture
+def sample_file_with_acl(tmp_path_factory, aclin):
   directory = tmp_path_factory.mktemp('sample_files')
   file = directory / 'file_with_user_read_acl'
   file.touch()

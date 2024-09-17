@@ -8,7 +8,17 @@ An English copy of the Licence is shipped in a file called LICENSE along with th
 You may obtain copies of the Licence in any of the official languages at https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12.
 """
 
-import posix1e
+from pwd import getpwnam
+
+from posix1e import (
+    ACL,
+    ACL_GROUP,
+    ACL_GROUP_OBJ,
+    ACL_MASK,
+    ACL_OTHER,
+    ACL_USER,
+    ACL_USER_OBJ,
+)
 
 DEFAULT_ENTRIES = [
   'u::rw-',
@@ -31,6 +41,15 @@ DEFAULT_ENTRYTYPES = [
 ]
 
 MAX_PERMBITS = 3
+
+LIBACL_TAGS = {
+  'user': ACL_USER,
+  'group': ACL_GROUP,
+  'user_obj': ACL_USER_OBJ,
+  'group_obj': ACL_GROUP_OBJ,
+  'other': ACL_OTHER,
+  'mask': ACL_MASK,
+}
 
 
 def reduce_entries(acl):
@@ -108,8 +127,41 @@ def parse_entries(acl):
   return outmap
 
 
+def buildacl(target_name, target_type, read=False, write=False, execute=False):
+  target_types = ['user', 'group']
+  if target_type not in target_types or not isinstance(target_name, str):
+    return ValueError('Invalid use of buildacl()')
+
+  myacl = ACL()
+  mytags = [tag for tag in LIBACL_TAGS if tag == target_type or tag in [ltag for ltag in LIBACL_TAGS if ltag not in target_types]]
+
+  aclmap = {
+    entry: myacl.append()
+    for entry in mytags
+  }
+
+  for entry, reference in aclmap.items():
+    reference.tag_type = LIBACL_TAGS[entry]
+
+  aclmap[target_type].qualifier = getpwnam(target_name).pw_uid
+
+  for pentry in ['mask', target_type]:
+    perms = aclmap[pentry].permset
+    perms.read = read
+    perms.write = write
+    perms.execute = execute
+
+  return myacl
+
+
+def acltofile(acl, path):
+  if acl.valid() is not True:
+    return ValueError('ACL is not ready to be applied.')
+  acl.applyto(path)
+
+
 def aclfromfile(path):
-  return posix1e.ACL(file=path)
+  return ACL(file=path)
 
 
 def entriesfromfile(path):
