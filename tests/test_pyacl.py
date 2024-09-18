@@ -24,7 +24,13 @@ def load_yaml(file):
 
 
 @mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
-def test_parse_acl(sample_file_with_acl, aclin, aclout):
+def test_parse_acl_through_string(sample_file_with_acl, aclin, aclout):
+  have = acl.parsefromfile_throughstring(sample_file_with_acl)
+  assert aclout == have
+
+
+@mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
+def test_parse_acl_native(sample_file_with_acl, aclin, aclout):
   have = acl.parsefromfile(sample_file_with_acl)
   assert aclout == have
 

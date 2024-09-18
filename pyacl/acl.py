@@ -8,7 +8,7 @@ An English copy of the Licence is shipped in a file called LICENSE along with th
 You may obtain copies of the Licence in any of the official languages at https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12.
 """
 
-from pwd import getpwnam
+from pwd import getpwnam, getpwuid
 
 from posix1e import (
     ACL,
@@ -58,7 +58,7 @@ def reduce_entries(acl):
   return entries
 
 
-def parse_permission(strpermission):
+def parsestrpermission(strpermission):
   if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
@@ -92,7 +92,7 @@ def parse_permission(strpermission):
   return outmap
 
 
-def parse_entry(strentry):
+def parsestrentry(strentry):
   if not strentry:
     raise ValueError('Got empty string')
 
@@ -111,9 +111,64 @@ def parse_entry(strentry):
 
   return {
     entrytype: {
-      entryvalue: parse_permission(permissions),
+      entryvalue: parsestrpermission(permissions),
     },
   }
+
+
+def parsefromacl(acl):  # noqa PLR0912, FIXME: uncomplexify this
+  permap = {
+    permission: False for permission in DEFAULT_PERMISSIONS.keys()
+  }
+  outmap = {
+    group: {
+      None: permap.copy(),
+    } for group in DEFAULT_ENTRYTYPES
+  }
+
+  for entry in acl:
+    name = None
+    permset = entry.permset
+    tag_type = entry.tag_type
+    try:
+      qualifier = entry.qualifier
+    except TypeError:
+      qualifier = None
+
+    if tag_type == 0:
+      return ValueError('Got ACL with undefined tag')
+
+    if isinstance(qualifier, int):
+      try:
+        name = getpwuid(qualifier).pw_name
+      except KeyError:
+        name = qualifier
+    elif qualifier is not None:
+      return ValueError('Got ACL with unhandled qualifier')
+
+    if tag_type in [ACL_USER, ACL_GROUP, ACL_USER_OBJ, ACL_GROUP_OBJ, ACL_MASK, ACL_OTHER]:
+      for tag_high, tag_low in LIBACL_TAGS.items():
+        if tag_low == tag_type:
+          lowmap = permap.copy()
+          for permission in lowmap.keys():
+            lowmap[permission] = getattr(permset, permission)
+          outtag = tag_high
+          if tag_type == ACL_USER_OBJ:
+            outname = None
+            outtag = 'user'
+          elif tag_type == ACL_GROUP_OBJ:
+            outname = None
+            outtag = 'group'
+          else:
+            outname = name
+          if outtag not in outmap:
+            outmap[outtag] = {}
+          if len(outmap[outtag]) == 1 and list(outmap[outtag].keys())[0] is None:
+            del outmap[outtag][None]
+          outmap[outtag][outname] = lowmap
+          break
+
+  return outmap
 
 
 def parse_entries(acl):
@@ -122,7 +177,7 @@ def parse_entries(acl):
   }
 
   for entry in acl:
-    outmap.update(parse_entry(entry))
+    outmap.update(parsestrentry(entry))
 
   return outmap
 
@@ -168,5 +223,9 @@ def entriesfromfile(path):
   return reduce_entries(aclfromfile(path))
 
 
-def parsefromfile(path):
+def parsefromfile_throughstring(path):
   return parse_entries(reduce_entries(aclfromfile(path)))
+
+
+def parsefromfile(path):
+  return parsefromacl(aclfromfile(path))
