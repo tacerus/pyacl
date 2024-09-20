@@ -74,4 +74,4 @@ build_acl(target_name, target_type, read=False, write=False, execute=False)
 
 ## Hacking/Tests
 
-Functionality is tested through `pytest`. As it requires a certain test user to be present, easiest is to use the purpose-built container image. A wrapper is provided at `test.sh`.
+Functionality is tested through `pytest`. As it requires a certain test user to be present, easiest is to use the purpose-built container image. A wrapper is provided at `scripts/test.sh`.
