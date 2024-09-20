@@ -58,7 +58,7 @@ def reduce_entries(acl):
   return entries
 
 
-def parsestrpermission(strpermission):
+def parse_permission_string(strpermission):
   if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
@@ -92,7 +92,7 @@ def parsestrpermission(strpermission):
   return outmap
 
 
-def parsestrentry(strentry):
+def parse_entry_string(strentry):
   if not strentry:
     raise ValueError('Got empty string')
 
@@ -111,12 +111,12 @@ def parsestrentry(strentry):
 
   return {
     entrytype: {
-      entryvalue: parsestrpermission(permissions),
+      entryvalue: parse_permission_string(permissions),
     },
   }
 
 
-def parsefromacl(acl):  # noqa PLR0912, FIXME: uncomplexify this
+def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
   permap = {
     permission: False for permission in DEFAULT_PERMISSIONS.keys()
   }
@@ -171,18 +171,18 @@ def parsefromacl(acl):  # noqa PLR0912, FIXME: uncomplexify this
   return outmap
 
 
-def parse_entries(acl):
+def parse_acl_via_string(acl):
   outmap = {
     group: DEFAULT_PERMISSIONS for group in DEFAULT_ENTRYTYPES
   }
 
   for entry in acl:
-    outmap.update(parsestrentry(entry))
+    outmap.update(parse_entry_string(entry))
 
   return outmap
 
 
-def buildacl(target_name, target_type, read=False, write=False, execute=False):
+def build_acl(target_name, target_type, read=False, write=False, execute=False):
   target_types = ['user', 'group']
   if target_type not in target_types or not isinstance(target_name, str):
     return ValueError('Invalid use of buildacl()')
@@ -209,23 +209,19 @@ def buildacl(target_name, target_type, read=False, write=False, execute=False):
   return myacl
 
 
-def acltofile(acl, path):
+def apply_acl_to_path(acl, path):
   if acl.valid() is not True:
     return ValueError('ACL is not ready to be applied.')
   acl.applyto(path)
 
 
-def aclfromfile(path):
+def read_acl_from_path(path):
   return ACL(file=path)
 
 
-def entriesfromfile(path):
-  return reduce_entries(aclfromfile(path))
+def parse_acl_from_path_via_string(path):
+  return parse_acl_via_string(reduce_entries(read_acl_from_path(path)))
 
 
-def parsefromfile_throughstring(path):
-  return parse_entries(reduce_entries(aclfromfile(path)))
-
-
-def parsefromfile(path):
-  return parsefromacl(aclfromfile(path))
+def parse_acl_from_path(path):
+  return parse_acl(read_acl_from_path(path))
