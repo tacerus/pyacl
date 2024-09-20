@@ -53,12 +53,20 @@ LIBACL_TAGS = {
 
 
 def reduce_entries(acl):
+  """
+  Example usage: reduce_entries(posix1e.ACL)
+  Return: List of entries converted to strings
+  """
   entries = acl.to_any_text().decode().split()
   entries = [entry for entry in entries if entry not in DEFAULT_ENTRIES]
   return entries
 
 
 def parse_permission_string(strpermission):
+  """
+  Example usage: parse_permission_string('r--')
+  Return: Permission map
+  """
   if len(strpermission) != MAX_PERMBITS:
     return ValueError('Invalid permission')
 
@@ -93,6 +101,10 @@ def parse_permission_string(strpermission):
 
 
 def parse_entry_string(strentry):
+  """
+  Example usage: parse_entry_string('user:georg2:r--')
+  Return: Individual ACL map
+  """
   if not strentry:
     raise ValueError('Got empty string')
 
@@ -117,6 +129,10 @@ def parse_entry_string(strentry):
 
 
 def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
+  """
+  Example usage: parse_acl(posix1e.ACL)
+  Return: Complete ACL map
+  """
   permap = {
     permission: False for permission in DEFAULT_PERMISSIONS.keys()
   }
@@ -172,6 +188,10 @@ def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
 
 
 def parse_acl_via_string(acl):
+  """
+  Example usage: parse_acl(['user::---', 'user:georg2:r--', 'group::---', 'mask::r--', 'other::---'])
+  Return: Complete ACL map
+  """
   outmap = {
     group: DEFAULT_PERMISSIONS for group in DEFAULT_ENTRYTYPES
   }
@@ -183,6 +203,10 @@ def parse_acl_via_string(acl):
 
 
 def build_acl(target_name, target_type, read=False, write=False, execute=False):
+  """
+  Example usage: build_acl(target_name='georg2', target_type='user', read=True, write=False, execute=True)
+  Return: posix1e.ACL
+  """
   target_types = ['user', 'group']
   if target_type not in target_types or not isinstance(target_name, str):
     return ValueError('Invalid use of buildacl()')
@@ -210,18 +234,35 @@ def build_acl(target_name, target_type, read=False, write=False, execute=False):
 
 
 def apply_acl_to_path(acl, path):
+  """
+  Example usage: apply_acl_to_path(posix1e.ACL, '/etc/foo.txt')
+  Return: None
+  """
   if acl.valid() is not True:
     return ValueError('ACL is not ready to be applied.')
   acl.applyto(path)
 
 
 def read_acl_from_path(path):
+  """
+  Example usage: read_acl_from_path('/etc/foo.txt')
+  Return: posix1e.ACL
+  """
   return ACL(file=path)
 
 
 def parse_acl_from_path_via_string(path):
+  """
+  Example usage: parse_acl_from_path_via_string('/etc/foo.txt')
+  Return: Complete ACL map
+  Note: parse_acl_from_path() should be preferred unless assessment of the string conversion functionality is desired
+  """
   return parse_acl_via_string(reduce_entries(read_acl_from_path(path)))
 
 
 def parse_acl_from_path(path):
+  """
+  Example usage: parse_acl_from_path('/etc/foo.txt')
+  Return: Complete ACL map
+  """
   return parse_acl(read_acl_from_path(path))
