@@ -1,20 +1,43 @@
 [build-system]
-requires = [
-  'hatchling',
-]
-build-backend = 'hatchling.build'
+requires = ["setuptools", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = 'pyacl'
 description = 'High level abstractions over pylibacl'
 version = '0.0.1'
+readme = "README.md"
 authors = [
   { name='Georg Pfuetzenreuter', email='georg+python@lysergic.dev' },
 ]
-readme = 'README.md'
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+    "Operating System :: POSIX :: Linux",
+]
 requires-python = '>=3.6'
 
-[tool.hatch.build.targets.pyacl]
 dependencies = [
-  'pylibacl',
+  'pylibacl==0.5.4',
 ]
+
+[tool.setuptools]
+include-package-data = true # include non-python files in the package (default)
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["scripts", "scripts.*", "docs.*", "tests", "tests.*", "ruff.toml"]
+
