@@ -34,6 +34,13 @@ dependencies = [
   'pylibacl==0.5.4',
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "PyYAML"
+]
+
 [tool.setuptools]
 include-package-data = true # include non-python files in the package (default)
 
