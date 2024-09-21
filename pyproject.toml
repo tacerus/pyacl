@@ -1,12 +1,12 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
 
 [project]
 name = 'pyacl'
 description = 'High level abstractions over pylibacl'
-version = '1.0.1'
-readme = "README.md"
+dynamic = ["version", "readme"]
 authors = [
   { name='Georg Pfuetzenreuter', email='georg+python@lysergic.dev' },
 ]
@@ -43,6 +43,10 @@ dev = [
 
 [tool.setuptools]
 include-package-data = true # include non-python files in the package (default)
+
+[tool.setuptools.dynamic]
+version = {attr = "pyacl.__version__"}
+readme = {file = ["README.md"]}
 
 [tool.setuptools.packages.find]
 where = ["."]
