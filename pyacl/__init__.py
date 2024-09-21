@@ -7,3 +7,11 @@ You may not use this work except in compliance with the Licence.
 An English copy of the Licence is shipped in a file called LICENSE along with this applications source code.
 You may obtain copies of the Licence in any of the official languages at https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12.
 """
+
+import importlib.metadata as importlib_metadata
+
+try:
+    # This will read version from pyproject.toml
+    __version__ = importlib_metadata.version(__package__ or __name__)
+except importlib_metadata.PackageNotFoundError:
+    __version__ = "development"
