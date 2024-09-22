@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = 'pyacl'
 description = 'High level abstractions over pylibacl'
-dynamic = ["version", "readme"]
+dynamic = ['license', 'readme', 'version']
 authors = [
   { name='Georg Pfuetzenreuter', email='georg+python@lysergic.dev' },
 ]
