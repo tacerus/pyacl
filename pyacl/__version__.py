@@ -7,4 +7,4 @@ An English copy of the Licence is shipped in a file called LICENSE along with th
 You may obtain copies of the Licence in any of the official languages at https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12.
 """
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
