@@ -243,6 +243,46 @@ def apply_acl_to_path(acl, path):
   acl.applyto(path)
 
 
+def merge_acls(acl1, acl2):
+  """
+  Example usage: merge_acls(posix1e.ACL, posix1e.ACL)
+  Return: posix1e.ACL
+  """
+  acl3 = ACL(acl=acl1)
+  for entry in acl2:
+    tag_type = entry.tag_type
+
+    # keep existing entries which may only exist once
+    if tag_type not in [ACL_USER_OBJ, ACL_GROUP_OBJ, ACL_OTHER]:
+
+      # replace existing user/group entries with new ones if the uid/gid matches
+      if tag_type in [ACL_USER, ACL_GROUP, ACL_MASK]:
+
+        for existing_entry in acl3:
+          existing_tag_type = existing_entry.tag_type
+
+          if tag_type in [ACL_USER, ACL_GROUP, ACL_MASK]:
+            if tag_type == existing_tag_type:
+              if tag_type == ACL_MASK or entry.qualifier == existing_entry.qualifier:
+                acl3.delete_entry(existing_entry)
+
+      acl3.append(entry)
+
+  acl3.calc_mask()
+
+  return acl3
+
+
+def update_acl_on_path(new_acl, path):
+  """
+  Example usage: update_acl_on_path(posix1e.ACL, '/etc/foo.txt')
+  Return: None
+  """
+  acl = merge_acls(read_acl_from_path(path), new_acl)
+
+  return apply_acl_to_path(acl, path)
+
+
 def read_acl_from_path(path):
   """
   Example usage: read_acl_from_path('/etc/foo.txt')
@@ -266,3 +306,13 @@ def parse_acl_from_path(path):
   Return: Complete ACL map
   """
   return parse_acl(read_acl_from_path(path))
+
+
+def debug_dump_acl_entries(acl):
+  for entry in acl:
+    print(f'tag: {entry.tag_type}', end='')
+    try:
+      print(f' qual: {entry.qualifier}')
+    except TypeError:
+      print()
+    print(f'read: {entry.permset.read}')
