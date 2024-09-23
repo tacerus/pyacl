@@ -37,20 +37,20 @@ def load_yamls(file1, file2):
   return out
 
 @mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
-def test_parse_acl_through_string(sample_file_with_acl, aclin, aclout):
+def test_parse_acl_through_string(sample_file_with_acl, aclout):
   have = acl.parse_acl_from_path_via_string(sample_file_with_acl)
   assert aclout == have
 
 
 @mark.parametrize('aclin, aclout', load_yaml('matrix.yaml'))
-def test_parse_acl_native(sample_file_with_acl, aclin, aclout):
+def test_parse_acl_native(sample_file_with_acl, aclout):
   have = acl.parse_acl_from_path(sample_file_with_acl)
   assert aclout == have
 
 
 @mark.parametrize('mode', ['fresh', 'update'])
 @mark.parametrize('scenario, data', load_yaml('matrix-apply.yaml'))
-def test_build_and_apply_acl(sample_file, mode, scenario, data):
+def test_build_and_apply_acl(sample_file, mode, scenario, data):  # noqa ARG001, scenario is only used for easier inspection of the dataset
   built_acl = acl.build_acl(**data['args'])
   assert len(list(built_acl)) == 5  # noqa PLR2004, this is the expected size of the built ACL
   assert acl.apply_acl_to_path(built_acl, sample_file) is None

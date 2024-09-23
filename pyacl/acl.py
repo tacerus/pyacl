@@ -58,8 +58,7 @@ def reduce_entries(acl):
   Return: List of entries converted to strings
   """
   entries = acl.to_any_text().decode().split()
-  entries = [entry for entry in entries if entry not in DEFAULT_ENTRIES]
-  return entries
+  return [entry for entry in entries if entry not in DEFAULT_ENTRIES]
 
 
 def parse_permission_string(strpermission):
@@ -134,7 +133,7 @@ def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
   Return: Complete ACL map
   """
   permap = {
-    permission: False for permission in DEFAULT_PERMISSIONS.keys()
+    permission: False for permission in DEFAULT_PERMISSIONS
   }
   outmap = {
     group: {
@@ -166,7 +165,7 @@ def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
       for tag_high, tag_low in LIBACL_TAGS.items():
         if tag_low == tag_type:
           lowmap = permap.copy()
-          for permission in lowmap.keys():
+          for permission in lowmap:
             lowmap[permission] = getattr(permset, permission)
           outtag = tag_high
           if tag_type == ACL_USER_OBJ:
@@ -179,7 +178,7 @@ def parse_acl(acl):  # noqa PLR0912, FIXME: uncomplexify this
             outname = name
           if outtag not in outmap:
             outmap[outtag] = {}
-          if len(outmap[outtag]) == 1 and list(outmap[outtag].keys())[0] is None:
+          if len(outmap[outtag]) == 1 and next(iter(outmap[outtag].keys())) is None:
             del outmap[outtag][None]
           outmap[outtag][outname] = lowmap
           break
@@ -240,7 +239,7 @@ def apply_acl_to_path(acl, path):
   """
   if acl.valid() is not True:
     return ValueError('ACL is not ready to be applied.')
-  acl.applyto(path)
+  return acl.applyto(path)
 
 
 def merge_acls(acl1, acl2):
@@ -261,10 +260,8 @@ def merge_acls(acl1, acl2):
         for existing_entry in acl3:
           existing_tag_type = existing_entry.tag_type
 
-          if tag_type in [ACL_USER, ACL_GROUP, ACL_MASK]:
-            if tag_type == existing_tag_type:
-              if tag_type == ACL_MASK or entry.qualifier == existing_entry.qualifier:
-                acl3.delete_entry(existing_entry)
+          if tag_type in [ACL_USER, ACL_GROUP, ACL_MASK] and tag_type == existing_tag_type and ( tag_type == ACL_MASK or entry.qualifier == existing_entry.qualifier ):
+            acl3.delete_entry(existing_entry)
 
       acl3.append(entry)
 
@@ -308,11 +305,12 @@ def parse_acl_from_path(path):
   return parse_acl(read_acl_from_path(path))
 
 
+# ignoring T201, debug function is expected to print
 def debug_dump_acl_entries(acl):
   for entry in acl:
-    print(f'tag: {entry.tag_type}', end='')
+    print(f'tag: {entry.tag_type}', end='')  # noqa T201
     try:
-      print(f' qual: {entry.qualifier}')
+      print(f' qual: {entry.qualifier}')     # noqa T201
     except TypeError:
-      print()
-    print(f'read: {entry.permset.read}')
+      print()                                # noqa T201
+    print(f'read: {entry.permset.read}')     # noqa T201
