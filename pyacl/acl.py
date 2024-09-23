@@ -306,3 +306,13 @@ def parse_acl_from_path(path):
   Return: Complete ACL map
   """
   return parse_acl(read_acl_from_path(path))
+
+
+def debug_dump_acl_entries(acl):
+  for entry in acl:
+    print(f'tag: {entry.tag_type}', end='')
+    try:
+      print(f' qual: {entry.qualifier}')
+    except TypeError:
+      print()
+    print(f'read: {entry.permset.read}')
